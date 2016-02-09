@@ -39,10 +39,10 @@
 				</section>
 
 				<section>
-					<p>
+					<p id="coincidir">
 						Tanto siglos, tantos mundos, tanto espacio y ...
 					</p>
-					<audio controls>
+					<audio controls id="apertura">
 					  <source src="music/coincidir.mp3" type="audio/mpeg">
 					</audio>
 				</section>
@@ -93,9 +93,6 @@
 				<section data-background="img/maestros/carne-y-hueso.jpg" data-background-size="contain">
 				</section>
 				<section data-background="img/maestros/latente.jpg" data-background-size="contain">
-				</section>
-				<section>
-					<h2>#2 Encontrando maestros de carne y hueso</h2>
 				</section>
 				<section data-background="img/historias/2/rene-lavand.jpg" data-background-size="contain">
 				</section>
@@ -193,10 +190,12 @@
 			// Full list of configuration options available at:
 			// https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
-				controls: true,
+				controls: false,
 				progress: true,
 				history: true,
 				center: true,
+				keyboard: true,
+				mouseWheel: true,
 				transition: 'slide', // none/fade/slide/convex/concave/zoom
 				audio: {
 					prefix: 'audio/',
@@ -213,9 +212,41 @@
 					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
 					{ src: 'plugin/zoom-js/zoom.js', async: true },
 					{ src: 'plugin/notes/notes.js', async: true },
+					// { src: 'plugin/wave/webcam-swiper-0.1.js'},
+					// { src: 'plugin/wave/client.js'}
 				]
 			});
 
+			var fadeOut = {
+				start: 40,
+				end: 48
+			};
+			var fadeIn = {
+				start: 2 * 60 + 48,
+				end: 2 * 60 + 50
+			};
+
+			var audio1 = document.getElementById('apertura');
+			audio1.ontimeupdate = function() {
+				if (audio1.currentTime > fadeOut.start && audio1.currentTime <= fadeOut.end) {
+					audio1.volume -= 0.03;
+				}
+				if (audio1.currentTime > fadeIn.start && audio1.currentTime <= fadeIn.end) {
+					if (audio1.volume + 0.12 < 1) {
+						audio1.volume += 0.12;
+					} else {
+						audio1.volume = 1;
+					}
+				}
+			};
+
+			var coincidir = document.getElementById('coincidir');
+			coincidir.onclick = function() {
+				audio1.currentTime = fadeIn.start;
+				if (audio1.paused) {
+					audio1.play();
+				}
+			};
 		</script>
 
 	</body>

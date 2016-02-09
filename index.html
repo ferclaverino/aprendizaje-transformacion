@@ -96,9 +96,11 @@
 				</section>
 				<section data-background="img/historias/2/rene-lavand.jpg" data-background-size="contain">
 				</section>
-
 				<section>
 					<p>?</p>
+				</section>
+				<section>
+					<video data-autoplay id="cam1" class="stretch" controls></video>
 				</section>
 				<section>
 					<h2>Maestros en las voces viejas</h2>
@@ -217,36 +219,72 @@
 				]
 			});
 
-			var fadeOut = {
-				start: 40,
-				end: 48
-			};
-			var fadeIn = {
-				start: 2 * 60 + 48,
-				end: 2 * 60 + 50
-			};
+			Reveal.addEventListener( 'slidechanged', function(event) {
+			    if (event.indexh == 1) initAudio();
+					if (event.indexh == 18) startVideo();
+					if (event.indexh == 20) stopVideo();
+			} );
+			function initAudio() {
+				var fadeOut = {
+					start: 40,
+					end: 48
+				};
+				var fadeIn = {
+					start: 2 * 60 + 48,
+					end: 2 * 60 + 50
+				};
 
-			var audio1 = document.getElementById('apertura');
-			audio1.ontimeupdate = function() {
-				if (audio1.currentTime > fadeOut.start && audio1.currentTime <= fadeOut.end) {
-					audio1.volume -= 0.03;
+				var audio1 = document.getElementById('apertura');
+				audio1.currentTime = 0;
+
+				if (!audio1.ontimeupdate) {
+					audio1.ontimeupdate = function() {
+						if (audio1.currentTime > fadeOut.start && audio1.currentTime <= fadeOut.end) {
+							audio1.volume -= 0.03;
+						}
+						if (audio1.currentTime > fadeIn.start && audio1.currentTime <= fadeIn.end) {
+							if (audio1.volume + 0.12 < 1) {
+								audio1.volume += 0.12;
+							} else {
+								audio1.volume = 1;
+							}
+						}
+					};
 				}
-				if (audio1.currentTime > fadeIn.start && audio1.currentTime <= fadeIn.end) {
-					if (audio1.volume + 0.12 < 1) {
-						audio1.volume += 0.12;
-					} else {
-						audio1.volume = 1;
+
+				var coincidir = document.getElementById('coincidir');
+				if (!coincidir.onclick) {
+					coincidir.onclick = function() {
+						audio1.currentTime = fadeIn.start;
+						if (audio1.paused) {
+							audio1.play();
+						}
+					};
+				}
+			}
+
+			var isCapturing = false;
+			var myStream;
+			function startVideo () {
+				if (!isCapturing) {
+					var video = document.querySelector("#cam1");
+					isCapturing = true;
+					navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+					if (navigator.getUserMedia) navigator.getUserMedia({video: true}, handleVideo, videoError);
+
+					function handleVideo(stream) {
+						myStream = stream;
+					  video.src = window.URL.createObjectURL(stream);
 					}
-				}
-			};
 
-			var coincidir = document.getElementById('coincidir');
-			coincidir.onclick = function() {
-				audio1.currentTime = fadeIn.start;
-				if (audio1.paused) {
-					audio1.play();
+					function videoError(e) {}
 				}
-			};
+			}
+			function stopVideo () {
+				var track = myStream.getTracks()[0];  // if only one media track
+				track.stop();
+				isCapturing = false;
+			}
 		</script>
 
 	</body>

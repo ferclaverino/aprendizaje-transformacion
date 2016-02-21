@@ -42,11 +42,11 @@
 					<p id="coincidir">
 						Tanto siglos, tantos mundos, tanto espacio y ...
 					</p>
+					<video data-autoplay id="cam1" class="stretch" controls></video>
 					<audio controls id="audio1">
 					  <source src="music/coincidir.mp3" type="audio/mpeg">
 					</audio>
 				</section>
-
 				<section>
 					<p>?</p>
 				</section>
@@ -100,7 +100,7 @@
 					<p>?</p>
 				</section>
 				<section>
-					<video data-autoplay id="cam1" class="stretch" controls></video>
+					<video data-autoplay id="cam2" class="stretch" controls></video>
 				</section>
 				<section>
 					<h2>Maestros en las voces viejas</h2>
@@ -221,9 +221,15 @@
 				]
 			});
 
+			Reveal.addEventListener( 'ready', function() {
+			  captureVideo.start('#cam1');
+			});
+
 			Reveal.addEventListener( 'slidechanged', function(event) {
-			    if (event.indexh == 1) audio.init('#audio1', '#coincidir');
-					if (event.indexh == 18) captureVideo.start('#cam1');
+					if (event.indexh == 0) captureVideo.start('#cam1');
+					if (event.indexh == 1) audio.init('#audio1', '#coincidir');
+					if (event.indexh == 2) captureVideo.stop();
+					if (event.indexh == 18) captureVideo.start('#cam2');
 					if (event.indexh == 20) captureVideo.stop();
 			} );
 

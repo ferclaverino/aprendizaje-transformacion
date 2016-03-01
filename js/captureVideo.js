@@ -1,30 +1,31 @@
 (function(exports) {
-  var isCapturing = false;
   var myStream;
 
-  function start (selector) {
-    if (!isCapturing) {
-      var video = document.querySelector(selector);
-      isCapturing = true;
-      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
-      if (navigator.getUserMedia) navigator.getUserMedia({video: true}, handleVideo, videoError);
+  function init(selector) {
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+    if (navigator.getUserMedia) navigator.getUserMedia({video: true}, handleVideo, videoError);
 
-      function handleVideo(stream) {
-        myStream = stream;
-        video.src = window.URL.createObjectURL(stream);
-      }
-
-      function videoError(e) {}
+    function handleVideo(stream) {
+      myStream = stream;
+      var mySrc = window.URL.createObjectURL(stream);
+      $(selector).attr('src', mySrc);
     }
+  }
+
+  function videoError(e) {}
+
+  function go (selector) {
+    var video = document.querySelector(selector);
+    video.src = mySrc;
   }
 
   function stop () {
     var track = myStream.getTracks()[0];  // if only one media track
     track.stop();
-    isCapturing = false;
   }
 
-  exports.start = start;
+  exports.init = init;
+  exports.go = go;
   exports.stop = stop;
 
 })(this.captureVideo = {});

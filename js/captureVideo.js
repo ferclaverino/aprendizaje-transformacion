@@ -23,7 +23,7 @@
     track.stop();
     isCapturing = false;
   }
-  
+
   exports.start = start;
   exports.stop = stop;
 
